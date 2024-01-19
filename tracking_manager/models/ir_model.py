@@ -73,8 +73,7 @@ class IrModel(models.Model):
                 tracked_fields = custom_tracked_fields[model.model]
             else:
                 tracked_fields = model.field_id.filtered(
-                    lambda s: not s.readonly
-                    and not s.related
+                    lambda s: not s.related
                     and not s.ttype == "one2many"
                     and s.name in self.env[model.model]._fields
                 ).mapped("name")
@@ -159,7 +158,6 @@ class IrModelFields(models.Model):
     )
     trackable = fields.Boolean(
         compute="_compute_trackable",
-        store=True,
     )
 
     @api.depends("native_tracking")
@@ -185,13 +183,9 @@ class IrModelFields(models.Model):
             "message_main_attachment",
             "message_main_attachement_id",
         ]
+
         for rec in self:
-            rec.trackable = (
-                rec.name not in blacklists
-                and rec.store
-                and not rec.readonly
-                and not rec.related
-            )
+            rec.trackable = rec.name not in blacklists and rec.store and not rec.related
 
     def write(self, vals):
         custom_tracking = None
