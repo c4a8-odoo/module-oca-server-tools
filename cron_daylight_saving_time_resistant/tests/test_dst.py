@@ -12,7 +12,7 @@ from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 class TestDST(TransactionCase):
     def setUp(self):
         super().setUp()
-        self.registry.enter_test_mode(self.env.cr)
+        self.registry.enter_test_mode(self.cr)
 
     def tearDown(self):
         self.registry.leave_test_mode()

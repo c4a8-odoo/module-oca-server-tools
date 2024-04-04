@@ -28,7 +28,7 @@ class TestVacuumRule(common.TransactionCase):
 
     def setUp(self):
         super().setUp()
-        self.registry.enter_test_mode(self.env.cr)
+        self.registry.enter_test_mode(self.cr)
         self.env = api.Environment(
             self.registry.test_cr, self.env.uid, self.env.context
         )
