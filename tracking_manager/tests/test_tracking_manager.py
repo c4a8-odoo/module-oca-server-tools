@@ -2,6 +2,8 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from unittest.mock import patch
+
 from odoo_test_helper import FakeModelLoader
 
 from odoo.tests.common import TransactionCase
@@ -152,6 +154,15 @@ class TestTrackingManager(TransactionCase):
         self.assertEqual(len(self.messages), 1)
         self.assertIn("Change", self.messages.body)
 
+    @patch("odoo.addons.mail.models.mail_thread.MailThread.message_post_with_view")
+    def test_o2m_write_indirectly_patched(self, patched):
+        self.partner.write(
+            {
+                "bank_ids": [(1, self.partner.bank_ids[0].id, {"acc_number": "123"})],
+            }
+        )
+        patched.assert_called_once()
+
     def test_o2m_write_indirectly_on_not_tracked_fields(self):
         # Active custom tracking on res.partner.bank and remove tracking on acc_number
         bank_model = self.env["ir.model"].search([("model", "=", "res.partner.bank")])
@@ -266,3 +277,10 @@ class TestTrackingManager(TransactionCase):
         self.assertEqual(len(self.messages), 1)
         self.assertEqual(self.messages.body.count("Change"), 0)
         self.assertEqual(self.messages.body.count("Delete"), 1)
+
+    @patch("odoo.addons.mail.models.mail_thread.MailThread.message_post_with_view")
+    def test_o2m_write_directly(self, patched):
+        # see explanation of test_o2m_write_and_unlink_indirectly
+        self.partner.bank_ids.write({"acc_number": "0987654321"})
+        self.assertEqual(len(self.messages), 0)
+        patched.assert_not_called()
