@@ -19,6 +19,7 @@ dependencies = [
     "odoo-addon-sequence_python==19.0.*",
     "odoo-addon-session_db==19.0.*",
     "odoo-addon-test_auditlog==19.0.*",
+    "odoo-addon-tracking_manager==19.0.*",
     "odoo-addon-upgrade_analysis==19.0.*",
 ]
 classifiers=[
